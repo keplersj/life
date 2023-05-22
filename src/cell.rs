@@ -18,29 +18,22 @@ impl Cell {
             .filter(Cell::is_alive)
             .count();
 
-        if self == Cell::Alive {
-            if alive_cells < 2 {
-                return Cell::Dead;
-            }
+        match self {
+            Cell::Alive => {
+                if (2..=3).contains(&alive_cells) {
+                    return Cell::Alive;
+                }
 
-            if alive_cells == 2 || alive_cells == 3 {
-                return Cell::Alive;
+                Cell::Dead
             }
+            Cell::Dead => {
+                if alive_cells == 3 {
+                    return Cell::Alive;
+                }
 
-            if alive_cells > 3 {
-                return Cell::Dead;
+                Cell::Dead
             }
         }
-
-        if self == Cell::Dead {
-            if alive_cells == 3 {
-                return Cell::Alive;
-            }
-
-            return Cell::Dead;
-        }
-
-        self
     }
 
     pub fn alive(self) -> Option<Cell> {
