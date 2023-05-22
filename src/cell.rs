@@ -76,3 +76,171 @@ impl Display for Cell {
         f.write_char(char)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn dead_cell_dead_neighbors() {
+        let cell = Cell::Dead;
+        let neighbors = [
+            [Some(Cell::Dead), Some(Cell::Dead), Some(Cell::Dead)],
+            [Some(Cell::Dead), None, Some(Cell::Dead)],
+            [Some(Cell::Dead), Some(Cell::Dead), Some(Cell::Dead)],
+        ];
+
+        let next = cell.tick(neighbors);
+
+        assert_eq!(cell, next);
+        assert_eq!(next, Cell::Dead);
+    }
+
+    // Any live cell with fewer than two live neighbours dies, as if by underpopulation.
+
+    #[test]
+    fn alive_cell_dead_neighbors() {
+        let cell = Cell::Alive;
+        let neighbors = [
+            [Some(Cell::Dead), Some(Cell::Dead), Some(Cell::Dead)],
+            [Some(Cell::Dead), None, Some(Cell::Dead)],
+            [Some(Cell::Dead), Some(Cell::Dead), Some(Cell::Dead)],
+        ];
+
+        let next = cell.tick(neighbors);
+
+        assert_eq!(next, Cell::Dead);
+    }
+
+    #[test]
+    fn alive_cell_one_live_neighbor() {
+        let cell = Cell::Alive;
+        let neighbors = [
+            [Some(Cell::Alive), Some(Cell::Dead), Some(Cell::Dead)],
+            [Some(Cell::Dead), None, Some(Cell::Dead)],
+            [Some(Cell::Dead), Some(Cell::Dead), Some(Cell::Dead)],
+        ];
+
+        let next = cell.tick(neighbors);
+
+        assert_eq!(next, Cell::Dead);
+    }
+
+    // Any live cell with two or three live neighbours lives on to the next generation.
+
+    #[test]
+    fn alive_cell_two_live_neighbors() {
+        let cell = Cell::Alive;
+        let neighbors = [
+            [Some(Cell::Alive), Some(Cell::Alive), Some(Cell::Dead)],
+            [Some(Cell::Dead), None, Some(Cell::Dead)],
+            [Some(Cell::Dead), Some(Cell::Dead), Some(Cell::Dead)],
+        ];
+
+        let next = cell.tick(neighbors);
+
+        assert_eq!(next, Cell::Alive);
+    }
+
+    #[test]
+    fn alive_cell_three_live_neighbors() {
+        let cell = Cell::Alive;
+        let neighbors = [
+            [Some(Cell::Alive), Some(Cell::Alive), Some(Cell::Alive)],
+            [Some(Cell::Dead), None, Some(Cell::Dead)],
+            [Some(Cell::Dead), Some(Cell::Dead), Some(Cell::Dead)],
+        ];
+
+        let next = cell.tick(neighbors);
+
+        assert_eq!(next, Cell::Alive);
+    }
+
+    // Any live cell with more than three live neighbours dies, as if by overpopulation.
+
+    #[test]
+    fn alive_cell_four_live_neighbors() {
+        let cell = Cell::Alive;
+        let neighbors = [
+            [Some(Cell::Alive), Some(Cell::Alive), Some(Cell::Alive)],
+            [Some(Cell::Alive), None, Some(Cell::Dead)],
+            [Some(Cell::Dead), Some(Cell::Dead), Some(Cell::Dead)],
+        ];
+
+        let next = cell.tick(neighbors);
+
+        assert_eq!(next, Cell::Dead);
+    }
+
+    #[test]
+    fn alive_cell_five_live_neighbors() {
+        let cell = Cell::Alive;
+        let neighbors = [
+            [Some(Cell::Alive), Some(Cell::Alive), Some(Cell::Alive)],
+            [Some(Cell::Alive), None, Some(Cell::Alive)],
+            [Some(Cell::Dead), Some(Cell::Dead), Some(Cell::Dead)],
+        ];
+
+        let next = cell.tick(neighbors);
+
+        assert_eq!(next, Cell::Dead);
+    }
+
+    #[test]
+    fn alive_cell_six_live_neighbors() {
+        let cell = Cell::Alive;
+        let neighbors = [
+            [Some(Cell::Alive), Some(Cell::Alive), Some(Cell::Alive)],
+            [Some(Cell::Alive), None, Some(Cell::Alive)],
+            [Some(Cell::Alive), Some(Cell::Dead), Some(Cell::Dead)],
+        ];
+
+        let next = cell.tick(neighbors);
+
+        assert_eq!(next, Cell::Dead);
+    }
+
+    #[test]
+    fn alive_cell_seven_live_neighbors() {
+        let cell = Cell::Alive;
+        let neighbors = [
+            [Some(Cell::Alive), Some(Cell::Alive), Some(Cell::Alive)],
+            [Some(Cell::Alive), None, Some(Cell::Alive)],
+            [Some(Cell::Alive), Some(Cell::Alive), Some(Cell::Dead)],
+        ];
+
+        let next = cell.tick(neighbors);
+
+        assert_eq!(next, Cell::Dead);
+    }
+
+    #[test]
+    fn alive_cell_all_live_neighbors() {
+        let cell = Cell::Alive;
+        let neighbors = [
+            [Some(Cell::Alive), Some(Cell::Alive), Some(Cell::Alive)],
+            [Some(Cell::Alive), None, Some(Cell::Alive)],
+            [Some(Cell::Alive), Some(Cell::Alive), Some(Cell::Alive)],
+        ];
+
+        let next = cell.tick(neighbors);
+
+        assert_eq!(next, Cell::Dead);
+    }
+
+    // Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
+
+    #[test]
+    fn dead_cell_three_live_neighbors() {
+        let cell = Cell::Dead;
+        let neighbors = [
+            [Some(Cell::Alive), Some(Cell::Alive), Some(Cell::Alive)],
+            [Some(Cell::Dead), None, Some(Cell::Dead)],
+            [Some(Cell::Dead), Some(Cell::Dead), Some(Cell::Dead)],
+        ];
+
+        let next = cell.tick(neighbors);
+
+        assert_eq!(next, Cell::Alive);
+    }
+}

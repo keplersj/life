@@ -1,3 +1,7 @@
+#![warn(clippy::all)]
+#![warn(clippy::correctness)]
+#![warn(clippy::style)]
+#![warn(clippy::suspicious)]
 use life::cell::Cell;
 use std::fmt::Display;
 
