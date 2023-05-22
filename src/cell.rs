@@ -236,4 +236,36 @@ mod tests {
 
         assert_eq!(next, Cell::Alive);
     }
+
+    #[test]
+    fn dead_cell_is_dead() {
+        let cell = Cell::Dead;
+        let is_dead = cell.is_dead();
+
+        assert!(is_dead);
+    }
+
+    #[test]
+    fn dead_cell_is_not_alive() {
+        let cell = Cell::Dead;
+        let is_alive = cell.is_alive();
+
+        assert!(!is_alive);
+    }
+
+    #[test]
+    fn alive_cell_is_alive() {
+        let cell = Cell::Alive;
+        let is_alive = cell.is_alive();
+
+        assert!(is_alive);
+    }
+
+    #[test]
+    fn alive_cell_is_not_dead() {
+        let cell = Cell::Alive;
+        let is_dead = cell.is_dead();
+
+        assert!(!is_dead);
+    }
 }
